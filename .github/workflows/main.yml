@@ -1,0 +1,101 @@
+name: Next.js Build, Test, and Deploy
+
+on:
+  push:
+    branches:
+      - develop
+      - main
+  pull_request:
+    branches:
+      - develop
+      - 'feature/**'
+      - 'release/**'
+      - 'hotfix/**'
+
+env:
+  BIN_PATH: "/tmp/pntkl-editor"
+  DEPLOY_PATH: "/var/www/pntkl-editor"
+  DEPLOY_SCRIPT_PATH: "/home/runner/deploy_pntkl-editor.sh"
+  TMP_DEPLOY_PATH: "/tmp/pntkl-editor"
+  GCP_INSTANCE_ZONE: ${{ secrets.GCP_INSTANCE_ZONE }}
+  GCP_INSTANCE_NAME: ${{ secrets.GCP_INSTANCE_NAME }}
+
+jobs:
+  test:
+    name: Test Next.js
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v3
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: 20
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Test Next.js
+      run: npm run test
+
+  build:
+    name: Build Next.js
+
+    runs-on: ubuntu-latest
+
+    needs: test
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+  
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Next.js Cache
+        uses: jongwooo/next-cache@v1
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Dependencies and Build
+        run: npm run build
+
+  deploy:
+    name: Deploy Next.js
+
+    runs-on: ubuntu-latest
+
+    needs: [test, build]
+
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+
+    steps:
+    - name: Set up Cloud SDK credentials
+      id: 'auth'
+      uses: 'google-github-actions/auth@v2'
+      with:
+        credentials_json: '${{ secrets.GCP_SA_KEY }}'
+
+    - name: Set up Cloud SDK
+      uses: google-github-actions/setup-gcloud@v2
+      with:
+        version: 'latest'
+        project_id: ${{ secrets.GCP_PROJECT_ID }}
+
+    - name: Deploy to Google Cloud VM
+      run: |-
+        echo "Deploying application..."
+
+        # Copy binary
+        gcloud compute scp --zone $GCP_INSTANCE_ZONE $BIN_PATH $GCP_INSTANCE_NAME:$TMP_DEPLOY_PATH
+
+        # Optionally, run commands on the server after deployment
+        gcloud compute ssh $GCP_INSTANCE_NAME --zone $GCP_INSTANCE_ZONE --command="/usr/bin/sudo ${DEPLOY_SCRIPT_PATH}"
