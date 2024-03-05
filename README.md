@@ -61,4 +61,10 @@ Feel free to contribute to the project by opening issues or submitting pull requ
 
 This project is licensed under a dual APGL 3.0 and Commercial License - see the [LICENSE.md](LICENSE.md) file for details.
 
+## Code Coverage
+
+[![codecov](https://codecov.io/gh/TheTekton337/pntkl-editor/graph/badge.svg?token=SA5B9AZXCF)](https://codecov.io/gh/TheTekton337/pntkl-editor)
+
+![Code Coverage Visualization](https://codecov.io/gh/TheTekton337/pntkl-editor/graphs/sunburst.svg?token=SA5B9AZXCF)
+
 Happy coding with pntkl-editor! 🚀
