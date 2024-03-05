@@ -106,7 +106,7 @@ jobs:
         echo "Deploying application..."
 
         # Copy binary
-        gcloud compute scp --zone $GCP_INSTANCE_ZONE $BIN_PATH $GCP_INSTANCE_NAME:$TMP_DEPLOY_PATH
+        gcloud compute scp --recurse --zone $GCP_INSTANCE_ZONE $BIN_PATH $GCP_INSTANCE_NAME:$TMP_DEPLOY_PATH
 
         # Optionally, run commands on the server after deployment
         gcloud compute ssh $GCP_INSTANCE_NAME --zone $GCP_INSTANCE_ZONE --command="/usr/bin/sudo ${DEPLOY_SCRIPT_PATH}"
