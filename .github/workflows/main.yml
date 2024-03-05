@@ -42,6 +42,17 @@ jobs:
     - name: Test Next.js
       run: npm run test
 
+    - name: Upload coverage reports to Codecov
+      uses: codecov/codecov-action@v4.0.1
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
+        slug: TheTekton337/pntkl-editor
+        name: codecov-pntkl-editor
+        fail_ci_if_error: true
+        file: ./coverage/lcov.info
+        flags: unittests
+        verbose: false
+
   build:
     name: Build Next.js
 
