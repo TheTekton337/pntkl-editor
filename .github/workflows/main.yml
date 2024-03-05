@@ -13,10 +13,10 @@ on:
       - 'hotfix/**'
 
 env:
-  BIN_PATH: "/tmp/pntkl-editor"
+  DEPLOY_TAR_PATH: "pntkl-editor-deployment.tar.gz"
   DEPLOY_PATH: "/var/www/pntkl-editor"
   DEPLOY_SCRIPT_PATH: "/home/runner/deploy_pntkl-editor.sh"
-  TMP_DEPLOY_PATH: "/tmp/pntkl-editor"
+  TMP_DEPLOY_PATH: "/tmp"
   GCP_INSTANCE_ZONE: ${{ secrets.GCP_INSTANCE_ZONE }}
   GCP_INSTANCE_NAME: ${{ secrets.GCP_INSTANCE_NAME }}
 
@@ -28,7 +28,7 @@ jobs:
 
     steps:
     - name: Checkout Repository
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: Set up Node.js
       uses: actions/setup-node@v4
@@ -62,7 +62,7 @@ jobs:
 
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
   
       - name: Set up Node.js
         uses: actions/setup-node@v4
@@ -101,12 +101,15 @@ jobs:
         version: 'latest'
         project_id: ${{ secrets.GCP_PROJECT_ID }}
 
+    - name: Create Deployment Package
+      run: tar -czf $DEPLOY_TAR_PATH .next public package.json next.config.js
+
     - name: Deploy to Google Cloud VM
       run: |-
         echo "Deploying application..."
 
         # Copy binary
-        gcloud compute scp --recurse --zone $GCP_INSTANCE_ZONE $BIN_PATH $GCP_INSTANCE_NAME:$TMP_DEPLOY_PATH
+        gcloud compute scp --zone $GCP_INSTANCE_ZONE $DEPLOY_TAR_PATH $GCP_INSTANCE_NAME:$TMP_DEPLOY_PATH
 
         # Optionally, run commands on the server after deployment
         gcloud compute ssh $GCP_INSTANCE_NAME --zone $GCP_INSTANCE_ZONE --command="/usr/bin/sudo ${DEPLOY_SCRIPT_PATH}"
