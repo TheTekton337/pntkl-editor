@@ -14,6 +14,7 @@ interface ReactCodeMirrorEditorProps {
   onStatistics?: (data: Statistics) => void;
   onCreateEditor?: (view: EditorView, state: EditorState) => void;
   onUpdate?: (viewUpdate: ViewUpdate) => void;
+  onEditorViewInit?: (editorView: EditorView) => void;
 }
 
 const ReactCodeMirrorEditor: React.FC<ReactCodeMirrorEditorProps> = ({
@@ -23,10 +24,11 @@ const ReactCodeMirrorEditor: React.FC<ReactCodeMirrorEditorProps> = ({
   onStatistics,
   onCreateEditor,
   onUpdate,
+  onEditorViewInit,
 }) => {
   const editorContainerRef = useRef<HTMLDivElement | null>(null);
 
-  const { container } = useReactCodeMirrorEditor({
+  const { container, view } = useReactCodeMirrorEditor({
     container: editorContainerRef.current,
     height: "100vh",
     theme: "dark",
@@ -52,6 +54,15 @@ const ReactCodeMirrorEditor: React.FC<ReactCodeMirrorEditorProps> = ({
     },
     // TODO: Add more props
   });
+
+  useEffect(() => {
+    if (view) {
+      onEditorViewInit?.(view);
+    }
+    return () => {
+      view?.destroy();
+    };
+  }, [view]);
 
   useEffect(() => {
     const editorDiv = editorContainerRef.current;

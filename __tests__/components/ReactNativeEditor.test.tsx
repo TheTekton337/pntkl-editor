@@ -1,22 +1,23 @@
 import React from "react";
 import { render, fireEvent } from "@testing-library/react";
-import ReactNativeEditor from "../app/components/ReactNativeEditor";
+import ReactNativeEditor from "../../app/components/ReactNativeEditor";
+import { ViewUpdate } from "@codemirror/view";
 
-jest.mock("../app/components/CodeEditor", () => {
+jest.mock("../../app/components/CodeMirrorEditor", () => {
   return {
     __esModule: true,
     default: ({
       code,
-      onChange,
+      onEditorChange,
     }: {
       code: string;
-      onChange: (value: string, event: React.ChangeEvent) => void;
+      onEditorChange: (value: string, viewUpdate: ViewUpdate) => void;
     }) => {
       return (
         <textarea
           data-testid="mock-code-editor"
           value={code}
-          onChange={(e) => onChange(e.target.value, e)}
+          onChange={(e) => onEditorChange(e.target.value, e)}
         />
       );
     },
