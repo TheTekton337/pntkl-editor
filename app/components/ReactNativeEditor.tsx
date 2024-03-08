@@ -1,18 +1,23 @@
 "use client";
 
 import React, { useState } from "react";
-import CodeEditor from "./CodeEditor";
+import CodeMirrorEditor from "./CodeMirrorEditor";
+import { ViewUpdate } from "@codemirror/view";
 
 const ReactNativeEditor: React.FC = () => {
   const [code, setCode] = useState<string>("");
+  const [_lastViewUpdate, setLastViewUpdate] = useState<ViewUpdate | null>(
+    null
+  );
 
-  const handleChange = (newCode: string) => {
-    setCode(newCode);
+  const handleChange = (value: string, viewUpdate: ViewUpdate) => {
+    setLastViewUpdate(viewUpdate);
+    setCode(value);
   };
 
   return (
     <div className="full-height bg-dark text-light p-0">
-      <CodeEditor code={code} onChange={handleChange} />
+      <CodeMirrorEditor initialValue={code} onEditorChange={handleChange} />
     </div>
   );
 };
