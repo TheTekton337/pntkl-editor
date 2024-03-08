@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev -- -p 3373",
+    "dev": "next dev -- -H 0.0.0.0 -p 3370",
     "build": "next build",
     "start": "next start -- -p 3370",
     "lint": "next lint",
@@ -11,14 +11,29 @@
     "test:coverage": "jest --coverage"
   },
   "dependencies": {
+    "@babel/runtime": "^7.24.0",
+    "@codemirror/autocomplete": "^6.13.0",
+    "@codemirror/lang-javascript": "^6.2.2",
+    "@codemirror/language": "^6.10.1",
+    "@codemirror/lint": "^6.5.0",
+    "@codemirror/search": "^6.5.6",
+    "@codemirror/state": "^6.4.1",
+    "@codemirror/theme-one-dark": "^6.1.2",
+    "@codemirror/view": "^6.25.1",
+    "@lezer/common": "^1.2.1",
+    "@uiw/codemirror-themes": "^4.21.24",
+    "@uiw/codemirror-themes-all": "^4.21.24",
+    "@uiw/react-codemirror": "^4.21.24",
+    "codemirror": "^6.0.1",
     "next": "14.1.1",
     "react": "^18",
-    "react-dom": "^18",
-    "react-monaco-editor": "^0.55.0"
+    "react-dom": "^18"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^6.4.2",
     "@testing-library/react": "^14.2.1",
+    "@testing-library/react-hooks": "^8.0.1",
+    "@types/jest": "^29.5.12",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
@@ -32,5 +47,6 @@
     "tailwindcss": "^3.3.0",
     "ts-node": "^10.9.2",
     "typescript": "^5"
-  }
+  },
+  "packageManager": "yarn@4.1.1"
 }
